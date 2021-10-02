@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import AdvertisementCard from "../../src/components/custom-cards/advertisement";
+import { AdvertisementCard } from "../../src/components/custom-cards";
 import { EditAdvertisement } from "../../src/components/drawers";
 import Layout from "../../src/components/layout";
 import SectionContainerLayout from "../../src/components/section-container-layout";
