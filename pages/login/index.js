@@ -8,7 +8,7 @@ import {
   Container,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import dvuLogo from "../../public/logos/dvu.png";
+import dvuFullLogo from "../../public/logos/dvu-full.png";
 import Image from "next/image";
 
 const Login = () => {
@@ -22,7 +22,7 @@ const Login = () => {
       >
         <Grid item xs={12}>
           <Box maxWidth={300} mx="auto">
-            <Image src={dvuLogo} priority />
+            <Image src={dvuFullLogo} priority />
           </Box>
           <Box clone maxWidth={500} mx="auto">
             <Card>

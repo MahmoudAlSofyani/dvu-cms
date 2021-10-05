@@ -1,7 +1,8 @@
-import Layout from "../../src/components/layout";
+import { Typography } from "@mui/material";
+import Layout from "../../src/layouts";
 
 const Dashboard = () => {
-  return <Layout>hello</Layout>;
+  return <Layout pageTitle="Dashboard"></Layout>;
 };
 
 export default Dashboard;

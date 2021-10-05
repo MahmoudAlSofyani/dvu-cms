@@ -4,30 +4,29 @@ import {
   CardHeader,
   CardContent,
   IconButton,
+  Chip,
   Typography,
 } from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import moment from "moment";
 import { Box } from "@mui/system";
-import Image from "next/image";
 
-const AnnouncementCard = ({ data }) => {
+const EventCard = ({ data }) => {
   return (
     <Card elevation={0} sx={{ maxWidth: 300 }}>
-      <Box position="relative" height={250}>
-        <Image src="https://picsum.photos/500" layout="fill" />
-      </Box>
       <CardHeader
-        title={data.title}
+        title={data.name}
         titleTypographyProps={{ sx: { fontWeight: "bold" } }}
+        action={data.isMajor && <Chip color="secondary" label="Major" />}
         subheader={
-          <Box display="flex">
-            <Box mr={2}>
-              <Typography>Posted</Typography>
+          <Box display="flex" mt={1}>
+            <Box mr={1}>
+              <CalendarTodayOutlinedIcon />
             </Box>
             <Box>
               <Typography color="textPrimary">
-                {moment(data.createdAt).format("dddd DD-MM-YYYY")}
+                {moment(data.date).format("dddd DD-MM-YYYY")}
               </Typography>
             </Box>
           </Box>
@@ -38,11 +37,11 @@ const AnnouncementCard = ({ data }) => {
       </CardContent>
       <CardActions>
         <IconButton sx={{ marginLeft: "auto" }}>
-          <EditOutlinedIcon color="disabled" />
+          <EditOutlinedIcon color="primary" />
         </IconButton>
       </CardActions>
     </Card>
   );
 };
 
-export default AnnouncementCard;
+export default EventCard;
