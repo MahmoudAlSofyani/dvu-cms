@@ -31,6 +31,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           backgroundImage: "none",
+          borderRadius: "15px",
         },
       },
     },
@@ -38,7 +39,25 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           backgroundImage: "none",
-          borderRadius: "10px",
+          borderRadius: "20px",
+        },
+      },
+    },
+    MuiDrawer: {
+      styleOverrides: {
+        paper: {
+          backgroundImage: "none",
+        },
+        paperAnchorRight: {
+          borderTopLeftRadius: "20px",
+          borderBottomLeftRadius: "20px",
+        },
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        text: {
+          color: "#d6d6d6",
         },
       },
     },

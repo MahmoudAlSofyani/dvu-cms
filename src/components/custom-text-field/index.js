@@ -2,7 +2,13 @@ import { TextField } from "@mui/material";
 
 const CustomTextField = ({ label, type = "text" }) => {
   return (
-    <TextField label={label} type={type} variant="outlined" size="small" />
+    <TextField
+      fullWidth
+      label={label}
+      type={type}
+      variant="outlined"
+      size="small"
+    />
   );
 };
 

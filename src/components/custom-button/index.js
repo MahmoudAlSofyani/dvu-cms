@@ -1,8 +1,19 @@
 import { Button } from "@mui/material";
 
-const CustomButton = ({ label }) => {
+const CustomButton = ({
+  label,
+  variant = "contained",
+  fullWidth = true,
+  onClick,
+}) => {
   return (
-    <Button variant="contained" color="secondary" size="small">
+    <Button
+      variant={variant}
+      color="secondary"
+      size="small"
+      fullWidth={fullWidth}
+      onClick={onClick}
+    >
       {label}
     </Button>
   );

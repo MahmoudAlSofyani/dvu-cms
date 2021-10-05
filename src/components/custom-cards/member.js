@@ -15,8 +15,9 @@ import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import PhoneIphoneOutlinedIcon from "@mui/icons-material/PhoneIphoneOutlined";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import StarBorderOutlinedIcon from "@mui/icons-material/StarBorderOutlined";
+import CustomButton from "../custom-button";
 
-const MemberCard = ({ data }) => {
+const MemberCard = ({ data, onEdit }) => {
   return (
     <Card elevation={0} sx={{ maxWidth: 300 }}>
       <Box position="relative" height={250}>
@@ -82,9 +83,10 @@ const MemberCard = ({ data }) => {
         </Box>
       </CardContent>
       <CardActions>
-        <IconButton sx={{ marginLeft: "auto" }}>
+        <IconButton sx={{ marginLeft: "auto" }} onClick={onEdit}>
           <EditOutlinedIcon color="disabled" />
         </IconButton>
+        <CustomButton label="Purge" fullWidth={false} />
       </CardActions>
     </Card>
   );

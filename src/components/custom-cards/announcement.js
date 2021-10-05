@@ -11,7 +11,7 @@ import moment from "moment";
 import { Box } from "@mui/system";
 import Image from "next/image";
 
-const AnnouncementCard = ({ data }) => {
+const AnnouncementCard = ({ data, onEdit }) => {
   return (
     <Card elevation={0} sx={{ maxWidth: 300 }}>
       <Box position="relative" height={250}>
@@ -37,7 +37,7 @@ const AnnouncementCard = ({ data }) => {
         <div dangerouslySetInnerHTML={{ __html: data.details }} />
       </CardContent>
       <CardActions>
-        <IconButton sx={{ marginLeft: "auto" }}>
+        <IconButton sx={{ marginLeft: "auto" }} onClick={onEdit}>
           <EditOutlinedIcon color="disabled" />
         </IconButton>
       </CardActions>

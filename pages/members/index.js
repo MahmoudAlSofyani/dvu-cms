@@ -1,6 +1,7 @@
 import { Grid } from "@mui/material";
-import EventCard from "../../src/components/custom-cards/event";
+import { useState } from "react";
 import MemberCard from "../../src/components/custom-cards/member";
+import MemberDrawer from "../../src/components/custom-drawers/member";
 import ModuleToolbar from "../../src/components/module-toolbar";
 import Layout from "../../src/layouts";
 
@@ -55,19 +56,39 @@ const MEMBERS = [
 ];
 
 const Members = () => {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   return (
-    <Layout pageTitle="Members">
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <ModuleToolbar />
-        </Grid>
-        {MEMBERS.map((_member, index) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-            <MemberCard data={_member} />
+    <>
+      <Layout pageTitle="Members">
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <ModuleToolbar
+              onAdd={() => {
+                setIsEditMode(false);
+                setIsDrawerOpen(true);
+              }}
+            />
           </Grid>
-        ))}
-      </Grid>
-    </Layout>
+          {MEMBERS.map((_member, index) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+              <MemberCard
+                data={_member}
+                onEdit={() => {
+                  setIsEditMode(true);
+                  setIsDrawerOpen(true);
+                }}
+              />
+            </Grid>
+          ))}
+        </Grid>
+      </Layout>
+      <MemberDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        isEditMode={isEditMode}
+      />
+    </>
   );
 };
 

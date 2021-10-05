@@ -77,7 +77,9 @@ function CustomNavDrawer({ window, children, pageTitle }) {
           </IconButton>
         </Box>
         <Box>
-          <ExitToAppOutlinedIcon />
+          <IconButton>
+            <ExitToAppOutlinedIcon />
+          </IconButton>
         </Box>
       </Box>
     </Box>
