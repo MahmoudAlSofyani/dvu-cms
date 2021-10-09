@@ -1,7 +1,9 @@
 import { Grid } from "@mui/material";
 import EventCard from "../../src/components/custom-cards/event";
+import EventDrawer from "../../src/components/custom-drawers/event";
 import ModuleToolbar from "../../src/components/module-toolbar";
 import Layout from "../../src/layouts";
+import { useState } from "react";
 
 const EVENTS = [
   {
@@ -33,19 +35,39 @@ const EVENTS = [
 ];
 
 const Events = () => {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   return (
-    <Layout pageTitle="Events">
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <ModuleToolbar />
-        </Grid>
-        {EVENTS.map((_event, index) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-            <EventCard data={_event} />
+    <>
+      <Layout pageTitle="Events">
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <ModuleToolbar
+              onAdd={() => {
+                setIsEditMode(false);
+                setIsDrawerOpen(true);
+              }}
+            />
           </Grid>
-        ))}
-      </Grid>
-    </Layout>
+          {EVENTS.map((_event, index) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+              <EventCard
+                data={_event}
+                onEdit={() => {
+                  setIsEditMode(true);
+                  setIsDrawerOpen(true);
+                }}
+              />
+            </Grid>
+          ))}
+        </Grid>
+      </Layout>
+      <EventDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        isEditMode={isEditMode}
+      />
+    </>
   );
 };
 

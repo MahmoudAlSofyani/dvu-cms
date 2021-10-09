@@ -12,7 +12,7 @@ import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined
 import moment from "moment";
 import { Box } from "@mui/system";
 
-const EventCard = ({ data }) => {
+const EventCard = ({ data, onEdit }) => {
   return (
     <Card elevation={0} sx={{ maxWidth: 300 }}>
       <CardHeader
@@ -36,8 +36,8 @@ const EventCard = ({ data }) => {
         <div dangerouslySetInnerHTML={{ __html: data.details }} />
       </CardContent>
       <CardActions>
-        <IconButton sx={{ marginLeft: "auto" }}>
-          <EditOutlinedIcon color="primary" />
+        <IconButton sx={{ marginLeft: "auto" }} onClick={onEdit}>
+          <EditOutlinedIcon color="disabled" />
         </IconButton>
       </CardActions>
     </Card>

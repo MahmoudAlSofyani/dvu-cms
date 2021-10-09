@@ -116,20 +116,7 @@ function CustomNavDrawer({ window, children, pageTitle }) {
             justifyContent="space-between"
             width={1}
           >
-            <Box>
-              <Typography
-                variant="h6"
-                noWrap
-                component="div"
-                sx={{
-                  textTransform: "uppercase",
-                  fontWeight: "bold",
-                }}
-              >
-                {pageTitle}
-              </Typography>
-            </Box>
-            <Box>
+            <Box ml="auto">
               <Avatar>M</Avatar>
             </Box>
           </Box>
@@ -176,6 +163,18 @@ function CustomNavDrawer({ window, children, pageTitle }) {
       </Box>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Toolbar />
+        <Typography
+          variant="h6"
+          noWrap
+          component="div"
+          sx={{
+            textTransform: "uppercase",
+            fontWeight: "bold",
+          }}
+          gutterBottom
+        >
+          {pageTitle}
+        </Typography>
         {children}
       </Box>
     </Box>
