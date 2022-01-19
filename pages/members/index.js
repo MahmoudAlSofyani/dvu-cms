@@ -1,63 +1,23 @@
 import { Grid } from "@mui/material";
 import { useState } from "react";
+import { dehydrate, QueryClient, useQuery } from "react-query";
 import MemberCard from "../../src/components/custom-cards/member";
 import MemberDrawer from "../../src/components/custom-drawers/member";
 import ModuleToolbar from "../../src/components/module-toolbar";
 import Layout from "../../src/layouts";
-
-const MEMBERS = [
-  {
-    code: "SUPERADMIN",
-    firstName: "Super",
-    lastName: "Admin",
-    email: "admin@volkskreisuae.com",
-    mobile: "+971555555555",
-    whatsApp: "+971555555555",
-    points: 100,
-    isActive: true,
-    createdAt: "2020-10-10T00:00:00.000Z",
-    roles: [
-      {
-        code: "ADMIN",
-        name: "Admin",
-      },
-      {
-        code: "MEMBER",
-        name: "Member",
-      },
-    ],
-    cars: [
-      {
-        code: "car_HX4Y2",
-        model: "Golf GTI",
-        color: "Blue",
-        year: "2016",
-        plateCode: "DVB",
-        plateNumber: "3969",
-        plateSource: "Saudi Arabia",
-        vinNumber: "WVWFK2AU1GW066747",
-      },
-    ],
-    events: [],
-    advertisements: [
-      {
-        code: "advertisement_B7MPK",
-        title: "Boost Gauge",
-        price: 100,
-        description: "Hello",
-        isVerified: false,
-        isSold: false,
-        url: "boost-gauge",
-        createdAt: "2021-10-01T15:10:16.000Z",
-        updatedAt: "2021-10-01T15:10:16.000Z",
-      },
-    ],
-  },
-];
+import { searchUser } from "../../src/microservices/users";
 
 const Members = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+
+  const { data, isLoading, isError, error } = useQuery(
+    "users:search",
+    searchUser
+  );
+
+  console.log({ data, isLoading, isError, error });
+
   return (
     <>
       <Layout pageTitle="Members">
@@ -70,7 +30,7 @@ const Members = () => {
               }}
             />
           </Grid>
-          {MEMBERS.map((_member, index) => (
+          {/* {MEMBERS.map((_member, index) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
               <MemberCard
                 data={_member}
@@ -80,7 +40,7 @@ const Members = () => {
                 }}
               />
             </Grid>
-          ))}
+          ))} */}
         </Grid>
       </Layout>
       <MemberDrawer
@@ -93,3 +53,15 @@ const Members = () => {
 };
 
 export default Members;
+
+export const getServerSideProps = async () => {
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery("users:search", searchUser);
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  };
+};
