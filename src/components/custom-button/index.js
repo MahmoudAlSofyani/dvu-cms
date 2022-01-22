@@ -5,15 +5,15 @@ const CustomButton = ({
   variant = "contained",
   fullWidth = true,
   onClick,
+  color = "secondary",
 }) => {
   return (
     <Button
       variant={variant}
-      color="secondary"
+      color={color}
       size="small"
       fullWidth={fullWidth}
-      onClick={onClick}
-    >
+      onClick={onClick}>
       {label}
     </Button>
   );

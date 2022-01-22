@@ -1,29 +1,29 @@
 import axios from "axios";
+import { getSession } from "next-auth/react";
 
-export const searchUser = async (token) => {
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
+const session = await getSession();
 
-  return axios.post(`${process.env.NEXT_PUBLIC_API_URL}/users/search`, null, {
-    headers,
-  });
+const headers = {
+  Authorization: `Bearer ${session?.user.accessToken}`,
 };
 
-export const getUserByUid = async (uid, token) => {
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
+export const searchUser = async (payload) => {
+  return axios.post(
+    `${process.env.NEXT_PUBLIC_API_URL}/users/search`,
+    payload,
+    {
+      headers,
+    }
+  );
+};
+
+export const getUserByUid = async (uid) => {
   return axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users/${uid}`, {
     headers,
   });
 };
 
-export const updateUserByUid = async (uid, payload, token) => {
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
-
+export const updateUserByUid = async (uid, payload) => {
   return axios.patch(
     `${process.env.NEXT_PUBLIC_API_URL}/users/${uid}`,
     payload,
@@ -31,11 +31,7 @@ export const updateUserByUid = async (uid, payload, token) => {
   );
 };
 
-export const updateUsersStatus = async (status, payload, token) => {
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
-
+export const updateUsersStatus = async (status, payload) => {
   return axios.patch(
     `${process.env.NEXT_PUBLIC_API_URL}/users/status/${status}`,
     payload,
@@ -46,5 +42,7 @@ export const updateUsersStatus = async (status, payload, token) => {
 };
 
 export const createUser = async (payload) => {
-  return axios.post(`${process.env.NEXT_PUBLIC_API_URL}/users`);
+  return axios.post(`${process.env.NEXT_PUBLIC_API_URL}/users`, payload, {
+    headers,
+  });
 };
