@@ -1,9 +1,8 @@
 import { Grid } from "@mui/material";
-import AnnouncementCard from "../../src/components/custom-cards/announcement";
 import ModuleToolbar from "../../src/components/module-toolbar";
 import Layout from "../../src/layouts";
-import AnnouncementDrawer from "../../src/components/custom-drawers/announcement";
 import { useState } from "react";
+import CustomDrawer from "../../src/components/custom-drawers";
 
 const ANNOUNCEMENTS = [
   {
@@ -53,18 +52,18 @@ const Announcements = () => {
           </Grid>
           {ANNOUNCEMENTS.map((_announcement, index) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-              <AnnouncementCard
+              {/* <AnnouncementCard
                 data={_announcement}
                 onEdit={() => {
                   setIsEditMode(true);
                   setIsDrawerOpen(true);
                 }}
-              />
+              /> */}
             </Grid>
           ))}
         </Grid>
       </Layout>
-      <AnnouncementDrawer
+      <CustomDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         isEditMode={isEditMode}

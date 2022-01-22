@@ -1,6 +1,5 @@
 import { Grid } from "@mui/material";
-import EventCard from "../../src/components/custom-cards/event";
-import EventDrawer from "../../src/components/custom-drawers/event";
+import CustomDrawer from "../../src/components/custom-drawers/";
 import ModuleToolbar from "../../src/components/module-toolbar";
 import Layout from "../../src/layouts";
 import { useState } from "react";
@@ -51,18 +50,18 @@ const Events = () => {
           </Grid>
           {EVENTS.map((_event, index) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-              <EventCard
+              {/* <EventCard
                 data={_event}
                 onEdit={() => {
                   setIsEditMode(true);
                   setIsDrawerOpen(true);
                 }}
-              />
+              /> */}
             </Grid>
           ))}
         </Grid>
       </Layout>
-      <EventDrawer
+      <CustomDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
         isEditMode={isEditMode}
