@@ -8,16 +8,22 @@ import {
   Container,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box } from "@mui/system";
 import dvuFullLogo from "../../public/logos/dvu-full.png";
 import Image from "next/image";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useFormik } from "formik";
-import router from "next/router";
+import { useRouter } from "next/router";
 
 const Login = () => {
   const [error, setError] = useState(null);
+  const session = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (session.status === "authenticated") return router.push("/dashboard");
+  }, [session]);
 
   const formik = useFormik({
     initialValues: {
