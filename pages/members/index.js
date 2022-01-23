@@ -45,8 +45,8 @@ const Members = ({ session }) => {
             />
           </Grid>
           {!isLoading &&
-            data?.data.map((_member, index) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+            data?.data.map((_member) => (
+              <Grid item xs={12} sm={6} md={4} lg={3} key={_member.uid}>
                 <ProfileCard
                   data={_member}
                   onPurge={() =>

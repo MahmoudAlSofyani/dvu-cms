@@ -39,8 +39,9 @@ const ProfileCard = ({ data, onPurge, onEdit }) => {
         <Typography variant="h6" gutterBottom component="div">
           {`${data.firstName} ${data.lastName}`}
         </Typography>
-        {data.roles.map((_role, index) => (
+        {data.roles.map((_role) => (
           <Chip
+            key={_role.uid}
             label={_role.name}
             color={_role.name === "Admin" ? "secondary" : "default"}
             sx={{ fontWeight: "bold", marginRight: "10px" }}
