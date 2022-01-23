@@ -6,9 +6,11 @@ const CustomButton = ({
   fullWidth = true,
   onClick,
   color = "secondary",
+  type = "",
 }) => {
   return (
     <Button
+      type={type}
       variant={variant}
       color={color}
       size="small"

@@ -1,7 +1,12 @@
 import { Grid } from "@mui/material";
 import { useState } from "react";
-import { QueryClient, useMutation, useQuery } from "react-query";
-import CustomerDrawer from "../../src/components/custom-drawers";
+import {
+  QueryClient,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "react-query";
+import CustomDrawer from "../../src/components/custom-drawers";
 import ModuleToolbar from "../../src/components/module-toolbar";
 import Layout from "../../src/layouts";
 import { searchUser, updateUsersStatus } from "../../src/microservices/users";
@@ -11,10 +16,10 @@ import { useDebounce } from "use-debounce";
 
 const Members = ({ session }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
   const [uid, setUid] = useState("");
   const [searchText, setSearchText] = useState("");
   const [value] = useDebounce(searchText, 1000);
+  const queryClient = useQueryClient();
   const [searchFilters, setSearchFilters] = useState({
     filters: {
       search: value,
@@ -22,27 +27,25 @@ const Members = ({ session }) => {
     limit: 100,
   });
 
-  const { data, isLoading, refetch } = useQuery("users:search", () =>
+  const { data, isLoading } = useQuery("users:search", () =>
     searchUser(searchFilters)
   );
 
-  const { mutate: purgeUnpurge } = useMutation(async ({ uid, status }) => {
-    await updateUsersStatus(status, { uids: [uid] });
-    refetch();
-  });
+  const { mutate: purgeUnpurge } = useMutation(
+    async ({ uid, status }) => {
+      await updateUsersStatus(status, { uids: [uid] });
+    },
+    {
+      onSuccess: () => queryClient.invalidateQueries("users:search"),
+    }
+  );
 
   return (
     <>
       <Layout pageTitle="Members" session={session} isLoading={isLoading}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <ModuleToolbar
-              onAdd={() => {
-                setIsEditMode(false);
-                setIsDrawerOpen(true);
-              }}
-              onSearch={(e) => setSearchText(e.target.value)}
-            />
+            <ModuleToolbar onSearch={(e) => setSearchText(e.target.value)} />
           </Grid>
           {!isLoading &&
             data?.data.map((_member) => (
@@ -55,18 +58,22 @@ const Members = ({ session }) => {
                       status: !_member.isActive,
                     })
                   }
+                  onEdit={() => {
+                    setUid(_member.uid);
+                    setIsDrawerOpen(true);
+                  }}
                 />
               </Grid>
             ))}
         </Grid>
       </Layout>
-      <CustomerDrawer
+      <CustomDrawer
         isOpen={isDrawerOpen}
-        onClose={() => {
+        onClose={async () => {
           setIsDrawerOpen(false);
           setUid("");
         }}
-        isEditMode={isEditMode}
+        type="member"
         uid={uid}
       />
     </>

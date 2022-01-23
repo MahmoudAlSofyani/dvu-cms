@@ -40,9 +40,3 @@ export const updateUsersStatus = async (status, payload) => {
     }
   );
 };
-
-export const createUser = async (payload) => {
-  return axios.post(`${process.env.NEXT_PUBLIC_API_URL}/users`, payload, {
-    headers,
-  });
-};
