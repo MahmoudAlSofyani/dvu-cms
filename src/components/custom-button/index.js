@@ -7,9 +7,11 @@ const CustomButton = ({
   onClick,
   color = "secondary",
   type = "",
+  component = "",
 }) => {
   return (
     <Button
+      component={component}
       type={type}
       variant={variant}
       color={color}

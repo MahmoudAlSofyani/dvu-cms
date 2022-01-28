@@ -3,42 +3,38 @@ import CustomDrawer from "../../src/components/custom-drawers/";
 import ModuleToolbar from "../../src/components/module-toolbar";
 import Layout from "../../src/layouts";
 import { useState } from "react";
+import {
+  QueryClient,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "react-query";
+import { getSession } from "next-auth/react";
+import {
+  publishUnpublishEvent,
+  searchEvents,
+} from "../../src/microservices/events";
+import EventCard from "../../src/components/event-card";
 
-const EVENTS = [
-  {
-    meetingLocation: [25, 25],
-    code: "event_QKE07",
-    name: "Event 1",
-    date: "2021-10-15T00:00:00.000Z",
-    meetingName: "Al Naboodah",
-    meetingTime: "2020-10-10T00:00:00.000Z",
-    details:
-      "<p>Awesome event! can't wait to join this drive to jabal jais in the early morning!!!!</p>",
-    isMajor: true,
-    url: "event-2-event_QKE07",
-    members: [],
-  },
-  {
-    meetingLocation: [25, 25],
-    code: "event_QKE07",
-    name: "Event 2",
-    date: "2021-10-15T00:00:00.000Z",
-    meetingName: "Al Naboodah",
-    meetingTime: "2020-10-10T00:00:00.000Z",
-    details:
-      "<p>Awesome event! can't wait to join this drive to jabal jais in the early morning!!!!</p>",
-    isMajor: false,
-    url: "event-2-event_QKE07",
-    members: [],
-  },
-];
-
-const Events = () => {
+const Events = ({ session }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [uid, setUid] = useState("");
+  const queryClient = useQueryClient();
+
+  const { data, isLoading } = useQuery("events:search", () => searchEvents());
+  const { mutate: publishUnpublish } = useMutation(
+    async (uid) => {
+      await publishUnpublishEvent(uid);
+    },
+    {
+      onSuccess: () => queryClient.invalidateQueries("events:search"),
+    }
+  );
+
   return (
     <>
-      <Layout pageTitle="Events">
+      <Layout pageTitle="Events" session={session}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <ModuleToolbar
@@ -48,26 +44,57 @@ const Events = () => {
               }}
             />
           </Grid>
-          {EVENTS.map((_event, index) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-              {/* <EventCard
-                data={_event}
-                onEdit={() => {
-                  setIsEditMode(true);
-                  setIsDrawerOpen(true);
-                }}
-              /> */}
-            </Grid>
-          ))}
+          {!isLoading &&
+            data?.data.map((_event) => (
+              <Grid item xs={12} sm={6} md={4} lg={3} key={_event.uid}>
+                <EventCard
+                  data={_event}
+                  onPublishUnpublish={() => publishUnpublish(_event.uid)}
+                  onEdit={() => {
+                    setIsEditMode(true);
+                    setUid(_event.uid);
+                    setIsDrawerOpen(true);
+                  }}
+                />
+              </Grid>
+            ))}
         </Grid>
       </Layout>
       <CustomDrawer
         isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
+        onClose={() => {
+          setIsEditMode(false);
+          setIsDrawerOpen(false);
+          setUid("");
+        }}
         isEditMode={isEditMode}
+        type="event"
+        uid={uid}
       />
     </>
   );
 };
 
 export default Events;
+
+export const getServerSideProps = async (context) => {
+  const queryClient = new QueryClient();
+  const session = await getSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  await queryClient.prefetchQuery("events:search", () => searchEvents());
+
+  return {
+    props: {
+      session,
+    },
+  };
+};

@@ -8,6 +8,7 @@ const CustomTextField = ({
   onChange,
   error,
   helperText,
+  params,
 }) => {
   return (
     <TextField
@@ -21,6 +22,7 @@ const CustomTextField = ({
       onChange={onChange}
       error={error}
       helperText={helperText}
+      {...params}
     />
   );
 };

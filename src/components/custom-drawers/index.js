@@ -1,12 +1,17 @@
 import { Drawer } from "@mui/material";
 import { Box } from "@mui/system";
 import MemberDrawer from "./member";
+import EventDrawer from "./event";
 
-const CustomDrawer = ({ isOpen, onClose, type, uid }) => {
+const CustomDrawer = ({ isOpen, onClose, type, uid, isEditMode }) => {
   const getComponent = (type) => {
     switch (type) {
       case "member":
         return <MemberDrawer uid={uid} onClose={onClose} />;
+      case "event":
+        return (
+          <EventDrawer isEditMode={isEditMode} uid={uid} onClose={onClose} />
+        );
     }
   };
 
