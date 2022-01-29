@@ -1,5 +1,6 @@
 import axios from "axios";
 import { getSession } from "next-auth/react";
+import { getFormData } from "../../utils/helpers";
 
 const session = await getSession();
 
@@ -70,11 +71,3 @@ export const publishUnpublishEvent = async (uid) => {
     }
   );
 };
-
-const getFormData = (payload) =>
-  Object.keys(payload).reduce((fD, key) => {
-    if (key === "poster") key = "file";
-
-    fD.append(key, payload[key === "file" ? "poster" : key]);
-    return fD;
-  }, new FormData());
