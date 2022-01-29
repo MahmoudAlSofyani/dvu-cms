@@ -6,25 +6,43 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { CacheProvider } from "@emotion/react";
 import theme from "../src/theme";
 import createEmotionCache from "../src/createEmotionCache";
+import { QueryClient, QueryClientProvider, Hydrate } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
+import { SessionProvider } from "next-auth/react";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import AdapterMoment from "@mui/lab/AdapterMoment";
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
 export default function MyApp(props) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
+  const [queryClient] = React.useState(() => new QueryClient());
 
   return (
-    <CacheProvider value={emotionCache}>
-      <Head>
-        <title>CMS | Der Volkskries UAE </title>
-        <meta name="viewport" content="initial-scale=1, width=device-width" />
-      </Head>
-      <ThemeProvider theme={theme}>
-        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-        <CssBaseline />
-        <Component {...pageProps} />
-      </ThemeProvider>
-    </CacheProvider>
+    <SessionProvider session={pageProps.session}>
+      <LocalizationProvider dateAdapter={AdapterMoment}>
+        <QueryClientProvider client={queryClient}>
+          <Hydrate state={pageProps.dehydratedState}>
+            <CacheProvider value={emotionCache}>
+              <Head>
+                <title>CMS | Der Volkskries UAE </title>
+                <meta
+                  name="viewport"
+                  content="initial-scale=1, width=device-width"
+                />
+              </Head>
+              <ThemeProvider theme={theme}>
+                {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+                <CssBaseline />
+                <Component {...pageProps} />
+              </ThemeProvider>
+            </CacheProvider>
+            <ReactQueryDevtools initialIsOpen={false} />
+          </Hydrate>
+        </QueryClientProvider>
+      </LocalizationProvider>
+    </SessionProvider>
   );
 }
 

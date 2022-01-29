@@ -19,12 +19,12 @@ import {
   useTheme,
   useMediaQuery,
   Avatar,
-  Divider,
 } from "@mui/material";
+import { signOut } from "next-auth/react";
 
 const drawerWidth = 90;
 
-function CustomNavDrawer({ window, children, pageTitle }) {
+function CustomNavDrawer({ window, children, pageTitle, session }) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -44,8 +44,7 @@ function CustomNavDrawer({ window, children, pageTitle }) {
         flexDirection="column"
         alignItems="center"
         justifyContent="space-evenly"
-        height={1}
-      >
+        height={1}>
         <Box>
           <IconButton onClick={() => router.push("/dashboard")}>
             <DashboardOutlinedIcon
@@ -77,7 +76,11 @@ function CustomNavDrawer({ window, children, pageTitle }) {
           </IconButton>
         </Box>
         <Box>
-          <IconButton>
+          <IconButton
+            onClick={() => {
+              signOut();
+              router.push("/login");
+            }}>
             <ExitToAppOutlinedIcon />
           </IconButton>
         </Box>
@@ -98,26 +101,25 @@ function CustomNavDrawer({ window, children, pageTitle }) {
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
-        }}
-      >
+        }}>
         <Toolbar>
           <IconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" } }}
-          >
+            sx={{ mr: 2, display: { sm: "none" } }}>
             <MenuIcon />
           </IconButton>
           <Box
             display="flex"
             alignItems="center"
             justifyContent="space-between"
-            width={1}
-          >
+            width={1}>
             <Box ml="auto">
-              <Avatar>M</Avatar>
+              <Avatar>
+                {session && session.user && session.user.firstName[0]}
+              </Avatar>
             </Box>
           </Box>
         </Toolbar>
@@ -125,8 +127,7 @@ function CustomNavDrawer({ window, children, pageTitle }) {
       <Box
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-        aria-label="mailbox folders"
-      >
+        aria-label="mailbox folders">
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Drawer
           container={container}
@@ -143,8 +144,7 @@ function CustomNavDrawer({ window, children, pageTitle }) {
               width: drawerWidth,
               backgroundImage: "none",
             },
-          }}
-        >
+          }}>
           {drawer}
         </Drawer>
         <Drawer
@@ -156,8 +156,7 @@ function CustomNavDrawer({ window, children, pageTitle }) {
               width: drawerWidth,
             },
           }}
-          open
-        >
+          open>
           {drawer}
         </Drawer>
       </Box>
@@ -171,8 +170,7 @@ function CustomNavDrawer({ window, children, pageTitle }) {
             textTransform: "uppercase",
             fontWeight: "bold",
           }}
-          gutterBottom
-        >
+          gutterBottom>
           {pageTitle}
         </Typography>
         {children}

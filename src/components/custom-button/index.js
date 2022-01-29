@@ -5,15 +5,19 @@ const CustomButton = ({
   variant = "contained",
   fullWidth = true,
   onClick,
+  color = "secondary",
+  type = "",
+  component = "",
 }) => {
   return (
     <Button
+      component={component}
+      type={type}
       variant={variant}
-      color="secondary"
+      color={color}
       size="small"
       fullWidth={fullWidth}
-      onClick={onClick}
-    >
+      onClick={onClick}>
       {label}
     </Button>
   );
