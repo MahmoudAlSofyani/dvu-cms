@@ -47,8 +47,7 @@ export const normalizeTableData = (key, value) => {
                 <Link
                   target="_blank"
                   rel="noreferrer"
-                  href={`https://www.google.com/maps/place/${value[0]},${value[1]}`}
-                >
+                  href={`https://www.google.com/maps/place/${value[0]},${value[1]}`}>
                   <a target="_blank" rel="norefferer">
                     Location
                   </a>
@@ -64,3 +63,11 @@ export const normalizeTableData = (key, value) => {
       return value;
   }
 };
+
+export const getFormData = (payload) =>
+  Object.keys(payload).reduce((fD, key) => {
+    if (key === "poster") key = "file";
+
+    fD.append(key, payload[key === "file" ? "poster" : key]);
+    return fD;
+  }, new FormData());

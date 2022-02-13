@@ -1,33 +1,27 @@
 import axios from "axios";
-import { getSession } from "next-auth/react";
+import { getFormData } from "../../utils/helpers";
 
-const session = await getSession();
-
-const headers = {
-  Authorization: `Bearer ${session?.user.accessToken}`,
-};
-
-export const createEvent = async (payload) => {
+export const createEvent = async (token, payload) => {
   return axios.post(
     `${process.env.NEXT_PUBLIC_API_URL}/events`,
     getFormData(payload),
     {
       headers: {
-        ...headers,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
       },
     }
   );
 };
 
-export const updateEventByUid = async (uid, payload) => {
+export const updateEventByUid = async (token, uid, payload) => {
   if (typeof payload.poster === "object") {
     return axios.patch(
       `${process.env.NEXT_PUBLIC_API_URL}/events/${uid}`,
       getFormData(payload),
       {
         headers: {
-          ...headers,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       }
@@ -37,44 +31,50 @@ export const updateEventByUid = async (uid, payload) => {
   return axios.patch(
     `${process.env.NEXT_PUBLIC_API_URL}/events/${uid}`,
     payload,
-    { headers }
-  );
-};
-
-export const bulkDeleteEvents = async (payload) => {
-  return axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/events`, payload, {
-    headers,
-  });
-};
-
-export const searchEvents = async (payload) => {
-  return axios.post(
-    `${process.env.NEXT_PUBLIC_API_URL}/events/search`,
-    payload,
-    { headers }
-  );
-};
-
-export const getEventByUid = async (uid) => {
-  return axios.get(`${process.env.NEXT_PUBLIC_API_URL}/events/${uid}`, {
-    headers,
-  });
-};
-
-export const publishUnpublishEvent = async (uid) => {
-  return axios.patch(
-    `${process.env.NEXT_PUBLIC_API_URL}/events/visibility/${uid}`,
-    null,
     {
-      headers,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     }
   );
 };
 
-const getFormData = (payload) =>
-  Object.keys(payload).reduce((fD, key) => {
-    if (key === "poster") key = "file";
+export const bulkDeleteEvents = async (token, payload) => {
+  return axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/events`, payload, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
 
-    fD.append(key, payload[key === "file" ? "poster" : key]);
-    return fD;
-  }, new FormData());
+export const searchEvents = async (token, payload) => {
+  return axios.post(
+    `${process.env.NEXT_PUBLIC_API_URL}/events/search`,
+    payload,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
+export const getEventByUid = async (token, uid) => {
+  return axios.get(`${process.env.NEXT_PUBLIC_API_URL}/events/${uid}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export const publishUnpublishEvent = async (token, uid) => {
+  return axios.patch(
+    `${process.env.NEXT_PUBLIC_API_URL}/events/visibility/${uid}`,
+    null,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};

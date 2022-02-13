@@ -22,10 +22,12 @@ const Events = ({ session }) => {
   const [uid, setUid] = useState("");
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery("events:search", () => searchEvents());
+  const { data, isLoading } = useQuery("events:search", () =>
+    searchEvents(session.user.accessToken)
+  );
   const { mutate: publishUnpublish } = useMutation(
     async (uid) => {
-      await publishUnpublishEvent(uid);
+      await publishUnpublishEvent(session.user.accessToken, uid);
     },
     {
       onSuccess: () => queryClient.invalidateQueries("events:search"),

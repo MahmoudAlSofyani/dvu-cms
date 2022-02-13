@@ -28,12 +28,14 @@ const Members = ({ session }) => {
   });
 
   const { data, isLoading } = useQuery("users:search", () =>
-    searchUser(searchFilters)
+    searchUser(session.user.accessToken, searchFilters)
   );
 
   const { mutate: purgeUnpurge } = useMutation(
     async ({ uid, status }) => {
-      await updateUsersStatus(status, { uids: [uid] });
+      await updateUsersStatus(session.user.accessToken, status, {
+        uids: [uid],
+      });
     },
     {
       onSuccess: () => queryClient.invalidateQueries("users:search"),
