@@ -19,12 +19,14 @@ import {
 import { useEffect, useState } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
+import { useSession } from "next-auth/react";
 
 const EventDrawer = ({ uid, onClose, isEditMode }) => {
   const queryClient = useQueryClient();
+  const session = useSession();
   const { data, isLoading, isFetching } = useQuery(
     `events:${uid}`,
-    async () => await getEventByUid(uid),
+    async () => await getEventByUid(session.user.accessToken, uid),
     { enabled: Boolean(isEditMode) !== false }
   );
 
@@ -61,14 +63,15 @@ const EventDrawer = ({ uid, onClose, isEditMode }) => {
   });
 
   const { mutate: editEvent } = useMutation(
-    async (values) => await updateEventByUid(uid, values),
+    async (values) =>
+      await updateEventByUid(session.user.accessToken, uid, values),
     {
       onSuccess: () => queryClient.invalidateQueries("events:search"),
     }
   );
 
   const { mutate: addEvent } = useMutation(
-    async (values) => await createEvent(values),
+    async (values) => await createEvent(session.user.accessToken, values),
     {
       onSuccess: () => queryClient.invalidateQueries("events:search"),
     }

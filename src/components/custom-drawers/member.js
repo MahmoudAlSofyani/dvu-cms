@@ -8,12 +8,14 @@ import { useEffect, useState } from "react";
 import CustomButton from "../custom-button";
 import { Box } from "@mui/system";
 import { getAllRoles } from "../../microservices/roles";
+import { useSession } from "next-auth/react";
 
 const MemberDrawer = ({ uid, onClose }) => {
   const queryClient = useQueryClient();
+  const session = useSession();
   const { data, isLoading } = useQuery(
     `users:${uid}`,
-    async () => await getUserByUid(uid)
+    async () => await getUserByUid(session.user.accessToken, uid)
   );
 
   const [initialValues, setInitialValues] = useState({
@@ -44,7 +46,7 @@ const MemberDrawer = ({ uid, onClose }) => {
 
   const { mutate: editUser } = useMutation(
     async (values) => {
-      await updateUserByUid(uid, values);
+      await updateUserByUid(session.user.accessToken, uid, values);
     },
     {
       onSuccess: () => queryClient.invalidateQueries("users:search"),
