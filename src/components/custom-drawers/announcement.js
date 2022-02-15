@@ -10,12 +10,15 @@ import {
   getAnnouncementByUid,
   updateAnnouncementByUid,
 } from "../../microservices/announcements";
+import { useSession } from "next-auth/react";
 
 const AnnouncementDrawer = ({ uid, onClose, isEditMode }) => {
   const queryClient = useQueryClient();
+  const session = useSession();
+
   const { data, isLoading, isFetching } = useQuery(
     `announcements:${uid}`,
-    async () => await getAnnouncementByUid(uid),
+    async () => await getAnnouncementByUid(session.user.accessToken, uid),
     { enabled: Boolean(isEditMode) !== false }
   );
 
@@ -42,14 +45,16 @@ const AnnouncementDrawer = ({ uid, onClose, isEditMode }) => {
   });
 
   const { mutate: editAnnouncement } = useMutation(
-    async (values) => await updateAnnouncementByUid(uid, values),
+    async (values) =>
+      await updateAnnouncementByUid(session.user.accessToken, uid, values),
     {
       onSuccess: () => queryClient.invalidateQueries("announcements:search"),
     }
   );
 
   const { mutate: addAnnouncement } = useMutation(
-    async (values) => await createAnnouncement(values),
+    async (values) =>
+      await createAnnouncement(session.user.accessToken, values),
     {
       onSuccess: () => queryClient.invalidateQueries("announcements:search"),
     }

@@ -1,34 +1,27 @@
 import axios from "axios";
-import { getSession } from "next-auth/react";
 import { getFormData } from "../../utils/helpers";
 
-const session = await getSession();
-
-const headers = {
-  Authorization: `Bearer ${session?.user.accessToken}`,
-};
-
-export const createEvent = async (payload) => {
+export const createEvent = async (token, payload) => {
   return axios.post(
     `${process.env.NEXT_PUBLIC_API_URL}/events`,
     getFormData(payload),
     {
       headers: {
-        ...headers,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
       },
     }
   );
 };
 
-export const updateEventByUid = async (uid, payload) => {
+export const updateEventByUid = async (token, uid, payload) => {
   if (typeof payload.poster === "object") {
     return axios.patch(
       `${process.env.NEXT_PUBLIC_API_URL}/events/${uid}`,
       getFormData(payload),
       {
         headers: {
-          ...headers,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       }
@@ -38,36 +31,50 @@ export const updateEventByUid = async (uid, payload) => {
   return axios.patch(
     `${process.env.NEXT_PUBLIC_API_URL}/events/${uid}`,
     payload,
-    { headers }
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
   );
 };
 
-export const bulkDeleteEvents = async (payload) => {
+export const bulkDeleteEvents = async (token, payload) => {
   return axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/events`, payload, {
-    headers,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 };
 
-export const searchEvents = async (payload) => {
+export const searchEvents = async (token, payload) => {
   return axios.post(
     `${process.env.NEXT_PUBLIC_API_URL}/events/search`,
     payload,
-    { headers }
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
   );
 };
 
-export const getEventByUid = async (uid) => {
+export const getEventByUid = async (token, uid) => {
   return axios.get(`${process.env.NEXT_PUBLIC_API_URL}/events/${uid}`, {
-    headers,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 };
 
-export const publishUnpublishEvent = async (uid) => {
+export const publishUnpublishEvent = async (token, uid) => {
   return axios.patch(
     `${process.env.NEXT_PUBLIC_API_URL}/events/visibility/${uid}`,
     null,
     {
-      headers,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     }
   );
 };

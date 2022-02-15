@@ -8,12 +8,15 @@ import { useEffect, useState } from "react";
 import CustomButton from "../custom-button";
 import { Box } from "@mui/system";
 import { getAllRoles } from "../../microservices/roles";
+import { useSession } from "next-auth/react";
 
 const MemberDrawer = ({ uid, onClose }) => {
   const queryClient = useQueryClient();
+  const session = useSession();
+
   const { data, isLoading } = useQuery(
     `users:${uid}`,
-    async () => await getUserByUid(uid)
+    async () => await getUserByUid(session.data.user.accessToken, uid)
   );
 
   const [initialValues, setInitialValues] = useState({
@@ -40,11 +43,13 @@ const MemberDrawer = ({ uid, onClose }) => {
     roles: yup.array().min(1).required("Required"),
   });
 
-  const { data: roles } = useQuery("roles:get", () => getAllRoles());
+  const { data: roles } = useQuery("roles:get", () =>
+    getAllRoles(session.data.user.accessToken)
+  );
 
   const { mutate: editUser } = useMutation(
     async (values) => {
-      await updateUserByUid(uid, values);
+      await updateUserByUid(session.data.user.accessToken, uid, values);
     },
     {
       onSuccess: () => queryClient.invalidateQueries("users:search"),
@@ -163,7 +168,12 @@ const MemberDrawer = ({ uid, onClose }) => {
       )}
       <Grid item xs={12}>
         <Box display="flex">
-          <CustomButton label="Cancel" variant="text" color="inherit" />
+          <CustomButton
+            label="Cancel"
+            variant="text"
+            color="inherit"
+            onClick={onClose}
+          />
           <CustomButton label="Save" onClick={handleSubmit} />
         </Box>
       </Grid>

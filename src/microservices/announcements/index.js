@@ -1,22 +1,15 @@
 import axios from "axios";
 
-import { getSession } from "next-auth/react";
 import { getFormData } from "../../utils/helpers";
 
-const session = await getSession();
-
-const headers = {
-  Authorization: `Bearer ${session?.user.accessToken}`,
-};
-
-export const createAnnouncement = async (payload) => {
+export const createAnnouncement = async (token, payload) => {
   if (typeof payload.poster === "object") {
     return axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/announcements`,
       getFormData(payload),
       {
         headers: {
-          ...headers,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       }
@@ -26,18 +19,22 @@ export const createAnnouncement = async (payload) => {
   return axios.post(
     `${process.env.NEXT_PUBLIC_API_URL}/announcements`,
     payload,
-    { headers }
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
   );
 };
 
-export const updateAnnouncementByUid = async (uid, payload) => {
+export const updateAnnouncementByUid = async (token, uid, payload) => {
   if (typeof payload.poster === "object") {
     return axios.patch(
       `${process.env.NEXT_PUBLIC_API_URL}/announcements/${uid}`,
       getFormData(payload),
       {
         headers: {
-          ...headers,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       }
@@ -47,38 +44,54 @@ export const updateAnnouncementByUid = async (uid, payload) => {
   return axios.patch(
     `${process.env.NEXT_PUBLIC_API_URL}/announcements/${uid}`,
     payload,
-    { headers }
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
   );
 };
 
-export const bulkDeleteAnnouncements = async (payload) => {
+export const bulkDeleteAnnouncements = async (token, payload) => {
   return axios.delete(
     `${process.env.NEXT_PUBLIC_API_URL}/announcements`,
     payload,
-    { headers }
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
   );
 };
 
-export const searchAnnouncements = async (payload) => {
+export const searchAnnouncements = async (token, payload) => {
   return axios.post(
     `${process.env.NEXT_PUBLIC_API_URL}/announcements/search`,
     payload,
-    { headers }
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
   );
 };
 
-export const getAnnouncementByUid = async (uid) => {
+export const getAnnouncementByUid = async (token, uid) => {
   return axios.get(`${process.env.NEXT_PUBLIC_API_URL}/announcements/${uid}`, {
-    headers,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 };
 
-export const publishUnpublishAnnouncement = async (uid) => {
+export const publishUnpublishAnnouncement = async (token, uid) => {
   return axios.patch(
     `${process.env.NEXT_PUBLIC_API_URL}/announcements/visibility/${uid}`,
     null,
     {
-      headers,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     }
   );
 };

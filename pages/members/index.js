@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Grid, useMediaQuery } from "@mui/material";
 import { useState } from "react";
 import {
   QueryClient,
@@ -13,27 +13,32 @@ import { searchUser, updateUsersStatus } from "../../src/microservices/users";
 import { getSession } from "next-auth/react";
 import ProfileCard from "../../src/components/profile-card";
 import { useDebounce } from "use-debounce";
+import { useTheme } from "@emotion/react";
+import MemberTable from "../../src/components/member-table";
 
 const Members = ({ session }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [uid, setUid] = useState("");
   const [searchText, setSearchText] = useState("");
-  const [value] = useDebounce(searchText, 1000);
   const queryClient = useQueryClient();
-  const [searchFilters, setSearchFilters] = useState({
-    filters: {
-      search: value,
-    },
-    limit: 100,
-  });
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const [value] = useDebounce(searchText, 500);
 
-  const { data, isLoading } = useQuery("users:search", () =>
-    searchUser(searchFilters)
+  const { data, isLoading } = useQuery(["users:search", value], () =>
+    searchUser(session.user.accessToken, {
+      filters: {
+        search: value,
+      },
+      limit: 100,
+    })
   );
 
   const { mutate: purgeUnpurge } = useMutation(
     async ({ uid, status }) => {
-      await updateUsersStatus(status, { uids: [uid] });
+      await updateUsersStatus(session.user.accessToken, status, {
+        uids: [uid],
+      });
     },
     {
       onSuccess: () => queryClient.invalidateQueries("users:search"),
@@ -45,26 +50,55 @@ const Members = ({ session }) => {
       <Layout pageTitle="Members" session={session} isLoading={isLoading}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <ModuleToolbar onSearch={(e) => setSearchText(e.target.value)} />
+            <ModuleToolbar
+              searchValue={searchText}
+              onSearch={(e) => setSearchText(e.target.value)}
+            />
           </Grid>
-          {!isLoading &&
-            data?.data.map((_member) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={_member.uid}>
-                <ProfileCard
-                  data={_member}
-                  onPurge={() =>
-                    purgeUnpurge({
-                      uid: _member.uid,
-                      status: !_member.isActive,
-                    })
-                  }
-                  onEdit={() => {
-                    setUid(_member.uid);
+          {!isLoading && data ? (
+            isMobile ? (
+              data?.data.map((_member) => (
+                <Grid item xs={12} sm={6} md={4} lg={3} key={_member.uid}>
+                  <ProfileCard
+                    data={_member}
+                    onPurge={() =>
+                      purgeUnpurge({
+                        uid: _member.uid,
+                        status: !_member.isActive,
+                      })
+                    }
+                    onEdit={() => {
+                      setUid(_member.uid);
+                      setIsDrawerOpen(true);
+                    }}
+                  />
+                </Grid>
+              ))
+            ) : (
+              <Grid item xs={12}>
+                <MemberTable
+                  data={data.data}
+                  onEdit={(uid) => {
+                    setUid(uid);
                     setIsDrawerOpen(true);
                   }}
+                  keysToOmit={[
+                    "uid",
+                    "firstName",
+                    "lastName",
+                    "mobileCountryCode",
+                    "whatsappCountryCode",
+                    "roles",
+                    "cars",
+                    "events",
+                    "advertisements",
+                  ]}
                 />
               </Grid>
-            ))}
+            )
+          ) : (
+            <p>No data</p>
+          )}
         </Grid>
       </Layout>
       <CustomDrawer
