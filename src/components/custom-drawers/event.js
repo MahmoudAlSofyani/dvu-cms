@@ -26,7 +26,7 @@ const EventDrawer = ({ uid, onClose, isEditMode }) => {
   const session = useSession();
   const { data, isLoading, isFetching } = useQuery(
     `events:${uid}`,
-    async () => await getEventByUid(session.user.accessToken, uid),
+    async () => await getEventByUid(session.data.user.accessToken, uid),
     { enabled: Boolean(isEditMode) !== false }
   );
 
@@ -64,14 +64,14 @@ const EventDrawer = ({ uid, onClose, isEditMode }) => {
 
   const { mutate: editEvent } = useMutation(
     async (values) =>
-      await updateEventByUid(session.user.accessToken, uid, values),
+      await updateEventByUid(session.data.user.accessToken, uid, values),
     {
       onSuccess: () => queryClient.invalidateQueries("events:search"),
     }
   );
 
   const { mutate: addEvent } = useMutation(
-    async (values) => await createEvent(session.user.accessToken, values),
+    async (values) => await createEvent(session.data.user.accessToken, values),
     {
       onSuccess: () => queryClient.invalidateQueries("events:search"),
     }

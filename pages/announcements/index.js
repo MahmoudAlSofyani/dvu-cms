@@ -15,20 +15,28 @@ import {
   useQueryClient,
 } from "react-query";
 import AnnouncementCard from "../../src/components/announcement-card";
+import { useDebounce } from "use-debounce";
 
 const Announcements = ({ session }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [uid, setUid] = useState("");
+  const [searchText, setSearchText] = useState("");
+  const [value] = useDebounce(searchText, 500);
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery("announcements:search", () =>
-    searchAnnouncements(session.user.accessToken)
+  const { data, isLoading } = useQuery(["announcements:search", value], () =>
+    searchAnnouncements(session.user.accessToken, {
+      filters: {
+        search: value,
+      },
+      limit: 100,
+    })
   );
 
   const { mutate: publishUnpublish } = useMutation(
     async (uid) =>
-      await publishUnpublishAnnouncement(session.user.accesstoken, uid),
+      await publishUnpublishAnnouncement(session.user.accessToken, uid),
     { onSuccess: () => queryClient.invalidateQueries("announcements:search") }
   );
 
@@ -38,6 +46,8 @@ const Announcements = ({ session }) => {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <ModuleToolbar
+              searchValue={searchText}
+              onSearch={(e) => setSearchText(e.target.value)}
               onAdd={() => {
                 setIsEditMode(false);
                 setIsDrawerOpen(true);
