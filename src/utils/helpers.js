@@ -1,19 +1,33 @@
 import moment from "moment";
 import Link from "next/link";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
 
 export const normalizeTableHeader = (key) => {
   switch (key) {
-    case "meetingName":
-      return "Meeting Name";
-    case "meetingTime":
-      return "Meeting Time";
-    case "meetingLocation":
-      return "Meeting Location";
-    case "isMajor":
-      return "Is Major?";
+    case "fullName":
+      return "Name";
+    case "email":
+      return "Email";
+    case "mobile":
+      return "Mobile";
+    case "whatsApp":
+      return "WhatsApp";
+    case "points":
+      return "Points";
+    case "isActive":
+      return "Active";
+    case "createdAt":
+      return "Joined";
     default:
       return key;
   }
+};
+
+export const omitHeaders = (headers, keysToOmit) => {
+  return headers
+    .filter((_header) => (keysToOmit.includes(_header) ? false : true))
+    .map((_h) => _h);
 };
 
 export const normalizeTableData = (key, value) => {
@@ -23,6 +37,12 @@ export const normalizeTableData = (key, value) => {
       switch (key) {
         case "isMajor":
           return value === true ? "Yes" : "No";
+        case "isActive":
+          return value === true ? (
+            <CheckIcon color="success" />
+          ) : (
+            <CloseIcon color="error" />
+          );
         default:
           return value;
       }
@@ -33,6 +53,8 @@ export const normalizeTableData = (key, value) => {
           return moment(value).format("DD-MM-YYYY");
         case "meetingTime":
           return moment(value).format("hh:mm A");
+        case "createdAt":
+          return moment(value).format("Do MMM YYYY");
         default:
           return value;
       }
