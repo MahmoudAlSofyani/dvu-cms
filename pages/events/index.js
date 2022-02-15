@@ -15,15 +15,23 @@ import {
   searchEvents,
 } from "../../src/microservices/events";
 import EventCard from "../../src/components/event-card";
+import { useDebounce } from "use-debounce";
 
 const Events = ({ session }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [uid, setUid] = useState("");
+  const [searchText, setSearchText] = useState("");
+  const [value] = useDebounce(searchText, 500);
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery("events:search", () =>
-    searchEvents(session.user.accessToken)
+  const { data, isLoading } = useQuery(["events:search", value], () =>
+    searchEvents(session.user.accessToken, {
+      filters: {
+        search: value,
+      },
+      limit: 100,
+    })
   );
   const { mutate: publishUnpublish } = useMutation(
     async (uid) => {
@@ -40,6 +48,8 @@ const Events = ({ session }) => {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <ModuleToolbar
+              searchValue={searchText}
+              onSearch={(e) => setSearchText(e.target.value)}
               onAdd={() => {
                 setIsEditMode(false);
                 setIsDrawerOpen(true);

@@ -18,7 +18,7 @@ const AnnouncementDrawer = ({ uid, onClose, isEditMode }) => {
 
   const { data, isLoading, isFetching } = useQuery(
     `announcements:${uid}`,
-    async () => await getAnnouncementByUid(session.user.accessToken, uid),
+    async () => await getAnnouncementByUid(session.data.user.accessToken, uid),
     { enabled: Boolean(isEditMode) !== false }
   );
 
@@ -46,7 +46,7 @@ const AnnouncementDrawer = ({ uid, onClose, isEditMode }) => {
 
   const { mutate: editAnnouncement } = useMutation(
     async (values) =>
-      await updateAnnouncementByUid(session.user.accessToken, uid, values),
+      await updateAnnouncementByUid(session.data.user.accessToken, uid, values),
     {
       onSuccess: () => queryClient.invalidateQueries("announcements:search"),
     }
@@ -54,7 +54,7 @@ const AnnouncementDrawer = ({ uid, onClose, isEditMode }) => {
 
   const { mutate: addAnnouncement } = useMutation(
     async (values) =>
-      await createAnnouncement(session.user.accessToken, values),
+      await createAnnouncement(session.data.user.accessToken, values),
     {
       onSuccess: () => queryClient.invalidateQueries("announcements:search"),
     }

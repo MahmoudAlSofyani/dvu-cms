@@ -4,9 +4,10 @@ import dvuSmallLogo from "../../../public/logos/dvu-small.png";
 import Image from "next/image";
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
-import NewReleasesOutlinedIcon from "@mui/icons-material/NewReleasesOutlined";
 import EventOutlinedIcon from "@mui/icons-material/EventOutlined";
 import ExitToAppOutlinedIcon from "@mui/icons-material/ExitToAppOutlined";
+import AnnouncementOutlinedIcon from "@mui/icons-material/AnnouncementOutlined";
+import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import { useRouter } from "next/router";
 import {
   AppBar,
@@ -61,7 +62,7 @@ function CustomNavDrawer({ window, children, pageTitle, session }) {
         </Box>
         <Box>
           <IconButton onClick={() => router.push("/announcements")}>
-            <NewReleasesOutlinedIcon
+            <AnnouncementOutlinedIcon
               color={
                 router.pathname === "/announcements" ? "secondary" : "inherit"
               }
@@ -72,6 +73,15 @@ function CustomNavDrawer({ window, children, pageTitle, session }) {
           <IconButton onClick={() => router.push("/events")}>
             <EventOutlinedIcon
               color={router.pathname === "/events" ? "secondary" : "inherit"}
+            />
+          </IconButton>
+        </Box>
+        <Box>
+          <IconButton onClick={() => router.push("/advertisements")}>
+            <LocalOfferOutlinedIcon
+              color={
+                router.pathname === "/advertisements" ? "secondary" : "inherit"
+              }
             />
           </IconButton>
         </Box>
