@@ -27,6 +27,7 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-material-ui-carousel": "^2.3.10-mui5",
+    "react-multiline-clamp": "^2.0.0",
     "react-query": "^3.34.8",
     "react-quill": "^2.0.0-beta.4",
     "use-debounce": "^7.0.1",

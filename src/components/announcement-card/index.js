@@ -9,7 +9,8 @@ import {
 import { Box } from "@mui/system";
 import CustomButton from "../custom-button";
 import Image from "next/image";
-import ImageNotSupportedOutlinedIcon from "@mui/icons-material/ImageNotSupportedOutlined";
+import dvuLogo from "../../../public/logos/dvu-small.png";
+import Clamp from "react-multiline-clamp";
 
 const AnnouncementCard = ({ data, onPublish, onEdit, onPublishUnpublish }) => {
   return (
@@ -21,9 +22,13 @@ const AnnouncementCard = ({ data, onPublish, onEdit, onPublishUnpublish }) => {
           sx={{ color: "white", fontWeight: "bold" }}
         />
       </Box>
-      <CardMedia>
+      <CardMedia sx={{ textAlign: "center", opacity: data.poster ? 1 : 0.2 }}>
         <Image
-          src={`${process.env.NEXT_PUBLIC_API_URL}/files/${data.poster?.uid}`}
+          src={
+            data.poster
+              ? `${process.env.NEXT_PUBLIC_API_URL}/files/${data.poster.uid}`
+              : dvuLogo
+          }
           width={300}
           height={300}
           objectFit="contain"
@@ -33,9 +38,9 @@ const AnnouncementCard = ({ data, onPublish, onEdit, onPublishUnpublish }) => {
         <Typography variant="h6" gutterBottom>
           {data.title}
         </Typography>
-        <Typography paragraph gutterBottom>
-          {data.details}
-        </Typography>
+        <Clamp lines={4}>
+          <div dangerouslySetInnerHTML={{ __html: data.details }}></div>
+        </Clamp>
       </CardContent>
       <CardActions sx={{ margin: "10px 10px" }}>
         <CustomButton

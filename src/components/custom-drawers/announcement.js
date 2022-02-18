@@ -11,6 +11,8 @@ import {
   updateAnnouncementByUid,
 } from "../../microservices/announcements";
 import { useSession } from "next-auth/react";
+const ReactQuill =
+  typeof window === "object" ? require("react-quill") : () => false;
 
 const AnnouncementDrawer = ({ uid, onClose, isEditMode }) => {
   const queryClient = useQueryClient();
@@ -26,6 +28,7 @@ const AnnouncementDrawer = ({ uid, onClose, isEditMode }) => {
     title: "",
     details: "",
     poster: "",
+    isPublished: false,
   });
 
   useEffect(() => {
@@ -42,6 +45,7 @@ const AnnouncementDrawer = ({ uid, onClose, isEditMode }) => {
       else if (value === "" || value === undefined) return true;
       else return false;
     }),
+    isPublished: yup.bool().optional(),
   });
 
   const { mutate: editAnnouncement } = useMutation(
@@ -82,7 +86,7 @@ const AnnouncementDrawer = ({ uid, onClose, isEditMode }) => {
         <>
           <Grid item xs={12}>
             <CustomTextField
-              label="title"
+              label="Title"
               name="title"
               value={values.title || ""}
               onChange={handleChange}
@@ -91,14 +95,10 @@ const AnnouncementDrawer = ({ uid, onClose, isEditMode }) => {
             />
           </Grid>
           <Grid item xs={12}>
-            <CustomTextField
-              label="Details"
-              name="details"
-              value={values.details || ""}
-              onChange={handleChange}
-              error={touched.details && Boolean(errors.details)}
-              helperText={touched.details && errors.details}
-            />
+            <ReactQuill
+              theme="snow"
+              value={values.details}
+              onChange={(nv) => setFieldValue("details", nv)}></ReactQuill>
           </Grid>
 
           <Grid item xs={12} textAlign="center">
