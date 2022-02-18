@@ -14,7 +14,17 @@ import Image from "next/image";
 const EventCard = ({ data, onPublish, onEdit, onPublishUnpublish }) => {
   return (
     <Card sx={{ maxWidth: 345 }}>
-      <Box p={2}>
+      <Box display="flex" columnGap={1} rowGap={1} p={2} flexWrap="wrap">
+        <Chip
+          label={data.isOpen ? "Registration Open" : "Registration Closed"}
+          color={data.isOpen ? "success" : "secondary"}
+          sx={{ color: "white", fontWeight: "bold" }}
+        />
+        <Chip
+          label={data.isPublished ? "Published" : "Unpublished"}
+          color={data.isPublished ? "success" : "secondary"}
+          sx={{ color: "white", fontWeight: "bold" }}
+        />
         {data.isMajor && (
           <Chip
             label="Major"
@@ -23,11 +33,6 @@ const EventCard = ({ data, onPublish, onEdit, onPublishUnpublish }) => {
             variant="outlined"
           />
         )}
-        <Chip
-          label={data.isPublished ? "Published" : "Unpublished"}
-          color={data.isPublished ? "success" : "secondary"}
-          sx={{ color: "white", fontWeight: "bold" }}
-        />
       </Box>
       {data.poster && (
         <CardMedia>

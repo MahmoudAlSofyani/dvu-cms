@@ -1,7 +1,9 @@
 import {
   Box,
+  FormControlLabel,
   Grid,
   Input,
+  Switch,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
@@ -39,6 +41,7 @@ const EventDrawer = ({ uid, onClose, isEditMode }) => {
     details: "",
     isMajor: false,
     poster: "",
+    isOpen: false,
   });
 
   useEffect(() => {
@@ -54,6 +57,7 @@ const EventDrawer = ({ uid, onClose, isEditMode }) => {
     meetingLocation: yup.string().required("Required"),
     details: yup.string().required("Required"),
     isMajor: yup.boolean().optional(),
+    isOpen: yup.boolean().optional(),
     poster: yup.mixed().test("isPosterChanged", "err", (value) => {
       if (typeof value === "string") return true;
       else if (typeof value === "object") return true;
@@ -197,6 +201,21 @@ const EventDrawer = ({ uid, onClose, isEditMode }) => {
                 />
               </Grid>
             </Grid>
+          </Grid>
+          <Grid item xs={12}>
+            <FormControlLabel
+              control={
+                <Switch
+                  color="success"
+                  checked={values.isOpen}
+                  onChange={(e, checked) => setFieldValue("isOpen", checked)}
+                />
+              }
+              label={
+                values.isOpen ? "Registration Open" : "Registration Closed"
+              }
+              name="isOpen"
+            />
           </Grid>
           <Grid item xs={12}>
             <Box display="flex">
