@@ -1,7 +1,7 @@
 import { AppBar, IconButton, Toolbar } from "@mui/material";
 import { Box } from "@mui/system";
 import CustomTextField from "../custom-text-field";
-import FilterListIcon from "@mui/icons-material/FilterList";
+// import FilterListIcon from "@mui/icons-material/FilterList";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 const ModuleToolbar = ({ onAdd, onSearch, searchValue }) => {
   return (
@@ -22,11 +22,11 @@ const ModuleToolbar = ({ onAdd, onSearch, searchValue }) => {
               </IconButton>
             </Box>
           )}
-          <Box ml="auto">
+          {/* <Box ml="auto">
             <IconButton>
               <FilterListIcon color="disabled" />
             </IconButton>
-          </Box>
+          </Box> */}
         </Box>
       </Toolbar>
     </AppBar>

@@ -2,6 +2,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { login } from "../../../src/microservices/auth";
 
 import NextAuth from "next-auth/next";
+import moment from "moment";
 
 export default NextAuth({
   providers: [
@@ -11,7 +12,12 @@ export default NextAuth({
       authorize: async ({ email, password }) => {
         try {
           const res = await login({ email, password });
-          if (res.status === 200) {
+          if (
+            res.status === 200 &&
+            res.data.user.roles.some(
+              (o) => o.uid === "ADMIN" || o.uid === "SUPERADMIN"
+            )
+          ) {
             return res.data;
           }
 

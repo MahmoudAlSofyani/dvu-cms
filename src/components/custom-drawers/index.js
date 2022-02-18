@@ -3,6 +3,7 @@ import { Box } from "@mui/system";
 import MemberDrawer from "./member";
 import EventDrawer from "./event";
 import AnnouncementDrawer from "./announcement";
+import AdvertisementDrawer from "./advertisement";
 
 const CustomDrawer = ({ isOpen, onClose, type, uid, isEditMode }) => {
   const getComponent = (type) => {
@@ -16,6 +17,14 @@ const CustomDrawer = ({ isOpen, onClose, type, uid, isEditMode }) => {
       case "announcement":
         return (
           <AnnouncementDrawer
+            isEditMode={isEditMode}
+            uid={uid}
+            onClose={onClose}
+          />
+        );
+      case "advertisement":
+        return (
+          <AdvertisementDrawer
             isEditMode={isEditMode}
             uid={uid}
             onClose={onClose}
