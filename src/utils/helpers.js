@@ -6,19 +6,21 @@ import CloseIcon from "@mui/icons-material/Close";
 export const normalizeTableHeader = (key) => {
   switch (key) {
     case "fullName":
-      return "Name";
+      return "NAME";
     case "email":
-      return "Email";
+      return "EMAIL";
     case "mobile":
-      return "Mobile";
+      return "MOBILE";
     case "whatsApp":
-      return "WhatsApp";
+      return "WHATSAPP";
     case "points":
-      return "Points";
+      return "POINTS";
     case "isActive":
-      return "Active";
+      return "ACTIVE";
     case "createdAt":
-      return "Joined";
+      return "JOINED";
+    case "approvedDate":
+      return "APPROVED";
     default:
       return key;
   }
@@ -54,6 +56,8 @@ export const normalizeTableData = (key, value) => {
         case "meetingTime":
           return moment(value).format("hh:mm A");
         case "createdAt":
+          return moment(value).format("Do MMM YYYY");
+        case "approvedDate":
           return moment(value).format("Do MMM YYYY");
         default:
           return value;

@@ -1,4 +1,10 @@
-import { Chip, Grid, Typography } from "@mui/material";
+import {
+  Chip,
+  FormControlLabel,
+  Grid,
+  Switch,
+  Typography,
+} from "@mui/material";
 import { useFormik } from "formik";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { getUserByUid, updateUserByUid } from "../../microservices/users";
@@ -9,6 +15,7 @@ import CustomButton from "../custom-button";
 import { Box } from "@mui/system";
 import { getAllRoles } from "../../microservices/roles";
 import { useSession } from "next-auth/react";
+import MuiPhoneNumber from "material-ui-phone-number";
 
 const MemberDrawer = ({ uid, onClose }) => {
   const queryClient = useQueryClient();
@@ -26,6 +33,8 @@ const MemberDrawer = ({ uid, onClose }) => {
     mobile: "",
     whatsApp: "",
     roles: [],
+    points: 0,
+    isActive: false,
   });
 
   useEffect(() => {
@@ -40,7 +49,9 @@ const MemberDrawer = ({ uid, onClose }) => {
     email: yup.string().email().required("Requireed"),
     mobile: yup.string().required("Required"),
     whatsApp: yup.string().optional(),
+    points: yup.number().min(0),
     roles: yup.array().min(1).required("Required"),
+    isActive: yup.bool().optional(),
   });
 
   const { data: roles } = useQuery("roles:get", () =>
@@ -56,16 +67,24 @@ const MemberDrawer = ({ uid, onClose }) => {
     }
   );
 
-  const { values, handleChange, handleSubmit, errors, touched, setValues } =
-    useFormik({
-      validationSchema,
-      initialValues,
-      enableReinitialize: true,
-      onSubmit: async (values) => {
-        editUser(values);
-        onClose();
-      },
-    });
+  const {
+    values,
+    handleChange,
+    handleSubmit,
+    errors,
+    touched,
+    setValues,
+    setFieldValue,
+    handleBlur,
+  } = useFormik({
+    validationSchema,
+    initialValues,
+    enableReinitialize: true,
+    onSubmit: async (values) => {
+      editUser(values);
+      onClose();
+    },
+  });
 
   const isRoleExist = (role) => {
     return values.roles.some((_role) => _role.name === role);
@@ -110,23 +129,38 @@ const MemberDrawer = ({ uid, onClose }) => {
             />
           </Grid>
           <Grid item xs={12}>
-            <CustomTextField
+            <MuiPhoneNumber
+              defaultCountry="ae"
+              variant="outlined"
+              fullWidth
               label="Mobile Number"
               name="mobile"
               value={values.mobile || ""}
-              onChange={handleChange}
+              onChange={(e, country) => {
+                setFieldValue("mobileCountryCode", country.dialCode);
+                setFieldValue("mobile", e);
+              }}
               error={touched.mobile && Boolean(errors.mobile)}
               helperText={touched.mobile && errors.mobile}
+              onBlur={handleBlur}
             />
           </Grid>
           <Grid item xs={12}>
-            <CustomTextField
-              label="WhatsApp"
+            <MuiPhoneNumber
+              defaultCountry="ae"
+              variant="outlined"
+              fullWidth
+              label="WhatsApp Number"
               name="whatsApp"
               value={values.whatsApp || ""}
-              onChange={handleChange}
+              onChange={(e, country) => {
+                setFieldValue("whatsappCountryCode", country.dialCode);
+                setFieldValue("whatsApp", e);
+                console.log(country.dialCode, e);
+              }}
               error={touched.whatsApp && Boolean(errors.whatsApp)}
               helperText={touched.whatsApp && errors.whatsApp}
+              onBlur={handleBlur}
             />
           </Grid>
           <Grid item xs={12}>
@@ -163,6 +197,29 @@ const MemberDrawer = ({ uid, onClose }) => {
                   />
                 ))}
             </Grid>
+          </Grid>
+          <Grid item xs={12}>
+            <CustomTextField
+              label="Brownie Points"
+              name="points"
+              value={values.points}
+              onChange={handleChange}
+              error={touched.points && Boolean(errors.points)}
+              helperText={touched.points && errors.points}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <FormControlLabel
+              control={
+                <Switch
+                  color="success"
+                  checked={values.isActive}
+                  onChange={(e, checked) => setFieldValue("isActive", checked)}
+                />
+              }
+              label={values.isActive ? "Active" : "Not Active"}
+              name="isActive"
+            />
           </Grid>
         </>
       )}
