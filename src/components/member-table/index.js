@@ -61,7 +61,7 @@ const MemberTable = ({ data, onEdit, keysToOmit }) => {
                     {normalizeTableData("isActive", _data.isActive)}
                   </TableCell>
                   <TableCell>
-                    {normalizeTableData("approvedDate", _data.approvedDate)}
+                    {normalizeTableData("isApproved", _data.isApproved)}
                   </TableCell>
                   <TableCell>
                     {normalizeTableData("createdAt", _data.createdAt)}

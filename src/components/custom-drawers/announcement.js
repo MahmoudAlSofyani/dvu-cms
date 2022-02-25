@@ -1,4 +1,4 @@
-import { Box, Grid, Input, Typography } from "@mui/material";
+import { Box, FormHelperText, Grid, Input, Typography } from "@mui/material";
 import CustomTextField from "../custom-text-field";
 import CustomButton from "../custom-button";
 import { useMutation, useQuery, useQueryClient } from "react-query";
@@ -17,6 +17,7 @@ const ReactQuill =
 const AnnouncementDrawer = ({ uid, onClose, isEditMode }) => {
   const queryClient = useQueryClient();
   const session = useSession();
+  const [imagePreview, setImagePreview] = useState(null);
 
   const { data, isLoading, isFetching } = useQuery(
     `announcements:${uid}`,
@@ -99,19 +100,39 @@ const AnnouncementDrawer = ({ uid, onClose, isEditMode }) => {
               theme="snow"
               value={values.details}
               onChange={(nv) => setFieldValue("details", nv)}></ReactQuill>
+            <FormHelperText error>
+              {touched.details && errors.details}
+            </FormHelperText>
           </Grid>
+          {imagePreview && (
+            <Grid item xs={12}>
+              <img
+                width={"100%"}
+                height={500}
+                src={imagePreview}
+                style={{ objectFit: "contain" }}
+              />
+            </Grid>
+          )}
 
           <Grid item xs={12} textAlign="center">
             <label htmlFor="contained-button-file">
               <Input
                 sx={{ display: "none" }}
-                accept="image/*"
+                inputProps={{
+                  accept: "image/*",
+                }}
                 id="contained-button-file"
-                multiple
                 type="file"
-                onChange={(e) => setFieldValue("poster", e.target.files[0])}
+                onChange={(e) => {
+                  setFieldValue("poster", e.target.files[0]);
+                  setImagePreview(URL.createObjectURL(e.target.files[0]));
+                }}
               />
-              <CustomButton label="Upload poster" component="span" />
+              <CustomButton
+                label={values.poster ? "Change Poster" : "Upload Poster"}
+                component="span"
+              />
             </label>
           </Grid>
 

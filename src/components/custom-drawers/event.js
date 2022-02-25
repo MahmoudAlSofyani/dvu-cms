@@ -1,6 +1,7 @@
 import {
   Box,
   FormControlLabel,
+  FormHelperText,
   Grid,
   Input,
   Switch,
@@ -22,10 +23,13 @@ import { useEffect, useState } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { useSession } from "next-auth/react";
+const ReactQuill =
+  typeof window === "object" ? require("react-quill") : () => false;
 
 const EventDrawer = ({ uid, onClose, isEditMode }) => {
   const queryClient = useQueryClient();
   const session = useSession();
+  const [imagePreview, setImagePreview] = useState(null);
   const { data, isLoading, isFetching } = useQuery(
     `events:${uid}`,
     async () => await getEventByUid(session.data.user.accessToken, uid),
@@ -112,14 +116,13 @@ const EventDrawer = ({ uid, onClose, isEditMode }) => {
             />
           </Grid>
           <Grid item xs={12}>
-            <CustomTextField
-              label="Details"
-              name="details"
-              value={values.details || ""}
-              onChange={handleChange}
-              error={touched.details && Boolean(errors.details)}
-              helperText={touched.details && errors.details}
-            />
+            <ReactQuill
+              theme="snow"
+              value={values.details}
+              onChange={(nv) => setFieldValue("details", nv)}></ReactQuill>
+            <FormHelperText error>
+              {touched.details && errors.details}
+            </FormHelperText>
           </Grid>
           <Grid item xs={12}>
             <DatePicker
@@ -149,17 +152,35 @@ const EventDrawer = ({ uid, onClose, isEditMode }) => {
               </Grid>
             </Grid>
           </Grid>
+          {imagePreview && (
+            <Grid item xs={12}>
+              <img
+                width={"100%"}
+                height={500}
+                src={imagePreview}
+                style={{ objectFit: "contain" }}
+              />
+            </Grid>
+          )}
+
           <Grid item xs={12} textAlign="center">
             <label htmlFor="contained-button-file">
               <Input
                 sx={{ display: "none" }}
-                accept="image/*"
+                inputProps={{
+                  accept: "image/*",
+                }}
                 id="contained-button-file"
-                multiple
                 type="file"
-                onChange={(e) => setFieldValue("poster", e.target.files[0])}
+                onChange={(e) => {
+                  setFieldValue("poster", e.target.files[0]);
+                  setImagePreview(URL.createObjectURL(e.target.files[0]));
+                }}
               />
-              <CustomButton label="Upload poster" component="span" />
+              <CustomButton
+                label={values.poster ? "Change Poster" : "Upload Poster"}
+                component="span"
+              />
             </label>
           </Grid>
 

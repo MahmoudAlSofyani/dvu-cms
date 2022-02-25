@@ -20,6 +20,8 @@ export const normalizeTableHeader = (key) => {
     case "createdAt":
       return "JOINED";
     case "approvedDate":
+      return "APPROVED ON";
+    case "isApproved":
       return "APPROVED";
     default:
       return key;
@@ -40,6 +42,12 @@ export const normalizeTableData = (key, value) => {
         case "isMajor":
           return value === true ? "Yes" : "No";
         case "isActive":
+          return value === true ? (
+            <CheckIcon color="success" />
+          ) : (
+            <CloseIcon color="error" />
+          );
+        case "isApproved":
           return value === true ? (
             <CheckIcon color="success" />
           ) : (
